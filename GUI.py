@@ -36,19 +36,19 @@ class JoystickApp(BraccioAdapter):
         self.control_frame = tk.Frame(self.frame, borderwidth=2, relief="solid")
         self.control_frame.grid(row=1, column=1, pady=10)
 
-        self.button_up = tk.Button(self.control_frame, text="Shoulder+", repeatdelay=repeatdelay, repeatinterval=repeatinterval, command=lambda: self.move_motor('m2', 1))
+        self.button_up = tk.Button(self.control_frame, text="Shoulder+", height=5, width=15,repeatdelay=repeatdelay, repeatinterval=repeatinterval, command=lambda: self.move_motor('m2', 1))
         self.button_up.grid(row=0, column=1, pady=5)
 
-        self.button_left = tk.Button(self.control_frame, text="Base-", repeatdelay=repeatdelay, repeatinterval=repeatinterval, command=lambda: self.move_motor('m1', -1))
+        self.button_left = tk.Button(self.control_frame, text="Base-", height=5, width=15, repeatdelay=repeatdelay, repeatinterval=repeatinterval, command=lambda: self.move_motor('m1', -1))
         self.button_left.grid(row=1, column=0, padx=5)
 
-        self.button_center = tk.Button(self.control_frame, text="Home", command=self.home)
+        self.button_center = tk.Button(self.control_frame, height=5, width=15, text="Home", command=self.home)
         self.button_center.grid(row=1, column=1, pady=5)
 
-        self.button_right = tk.Button(self.control_frame, text="Base+", repeatdelay=repeatdelay, repeatinterval=repeatinterval, command=lambda: self.move_motor('m1', 1))
+        self.button_right = tk.Button(self.control_frame, text="Base+", height=5, width=15, repeatdelay=repeatdelay, repeatinterval=repeatinterval, command=lambda: self.move_motor('m1', 1))
         self.button_right.grid(row=1, column=2, padx=5)
 
-        self.button_down = tk.Button(self.control_frame, text="Shoulder-", repeatdelay=repeatdelay, repeatinterval=repeatinterval, command=lambda: self.move_motor('m2', -1))
+        self.button_down = tk.Button(self.control_frame, text="Shoulder-", height=5, width=15, repeatdelay=repeatdelay, repeatinterval=repeatinterval, command=lambda: self.move_motor('m2', -1))
         self.button_down.grid(row=2, column=1, pady=5)
         
         #Frame 2
@@ -56,19 +56,19 @@ class JoystickApp(BraccioAdapter):
         self.control_frame = tk.Frame(self.frame, borderwidth=2, relief="solid")
         self.control_frame.grid(row=1, column=2, pady=5)
 
-        self.button_up = tk.Button(self.control_frame, text="M4+", repeatdelay=repeatdelay, repeatinterval=repeatinterval, command=lambda: self.move_motor('m4', 1))
+        self.button_up = tk.Button(self.control_frame, text="M4+", height=5, width=15, repeatdelay=repeatdelay, repeatinterval=repeatinterval, command=lambda: self.move_motor('m4', 1))
         self.button_up.grid(row=0, column=1, pady=5)
 
-        self.button_left = tk.Button(self.control_frame, text="M3-", repeatdelay=repeatdelay, repeatinterval=repeatinterval, command=lambda: self.move_motor('m3', -1))
+        self.button_left = tk.Button(self.control_frame, text="M3-", height=5, width=15, repeatdelay=repeatdelay, repeatinterval=repeatinterval, command=lambda: self.move_motor('m3', -1))
         self.button_left.grid(row=1, column=0, padx=5)
 
-        self.button_center = tk.Button(self.control_frame, text="Safe", command=self.safe)
+        self.button_center = tk.Button(self.control_frame, text="Safe", height=5, width=15, command=self.safe)
         self.button_center.grid(row=1, column=1, pady=5)
 
-        self.button_right = tk.Button(self.control_frame, text="M3+", repeatdelay=repeatdelay, repeatinterval=repeatinterval, command=lambda: self.move_motor('m3', 1))
+        self.button_right = tk.Button(self.control_frame, text="M3+", height=5, width=15, repeatdelay=repeatdelay, repeatinterval=repeatinterval, command=lambda: self.move_motor('m3', 1))
         self.button_right.grid(row=1, column=2, padx=5)
 
-        self.button_down = tk.Button(self.control_frame, text="M4-", repeatdelay=repeatdelay, repeatinterval=repeatinterval, command=lambda: self.move_motor('m4', -1))
+        self.button_down = tk.Button(self.control_frame, text="M4-", height=5, width=15, repeatdelay=repeatdelay, repeatinterval=repeatinterval, command=lambda: self.move_motor('m4', -1))
         self.button_down.grid(row=2, column=1, pady=5)
 
         #Frame 3
@@ -76,19 +76,19 @@ class JoystickApp(BraccioAdapter):
         self.control_frame = tk.Frame(self.frame, borderwidth=2, relief="solid")
         self.control_frame.grid(row=1, column=3, pady=5)
 
-        self.button_up = tk.Button(self.control_frame, text="M5+", repeatdelay=repeatdelay, repeatinterval=repeatinterval, command=lambda: self.move_motor('m5', 1))
+        self.button_up = tk.Button(self.control_frame, text="M5+", height=5, width=15, repeatdelay=repeatdelay, repeatinterval=repeatinterval, command=lambda: self.move_motor('m5', 1))
         self.button_up.grid(row=0, column=1, pady=5)
 
-        self.button_left = tk.Button(self.control_frame, text="M6-", repeatdelay=repeatdelay, repeatinterval=repeatinterval, command=lambda: self.move_motor('m6', -1))
+        self.button_left = tk.Button(self.control_frame, text="M6-", height=5, width=15, repeatdelay=repeatdelay, repeatinterval=repeatinterval, command=lambda: self.move_motor('m6', -1))
         self.button_left.grid(row=1, column=0, padx=5)
 
-        self.button_center = tk.Button(self.control_frame, text="Open/close", repeatdelay=repeatdelay, repeatinterval=repeatinterval, command=lambda: self.open_close())
+        self.button_center = tk.Button(self.control_frame, text="Open/close", height=5, width=15, repeatdelay=repeatdelay, repeatinterval=repeatinterval, command=lambda: self.open_close())
         self.button_center.grid(row=1, column=1, pady=5)
 
-        self.button_right = tk.Button(self.control_frame, text="M6+", repeatdelay=repeatdelay, repeatinterval=repeatinterval, command=lambda: self.move_motor('m6', 1))
+        self.button_right = tk.Button(self.control_frame, text="M6+", height=5, width=15, repeatdelay=repeatdelay, repeatinterval=repeatinterval, command=lambda: self.move_motor('m6', 1))
         self.button_right.grid(row=1, column=2, padx=5)
 
-        self.button_down = tk.Button(self.control_frame, text="M5-", repeatdelay=repeatdelay, repeatinterval=repeatinterval, command=lambda: self.move_motor('m5', -1))
+        self.button_down = tk.Button(self.control_frame, text="M5-", height=5, width=15, repeatdelay=repeatdelay, repeatinterval=repeatinterval, command=lambda: self.move_motor('m5', -1))
         self.button_down.grid(row=2, column=1, pady=5)
 
         # Angle Slider
