@@ -1,7 +1,8 @@
 import tkinter as tk
 from braccio_adapter import BraccioAdapter
+import numpy as np
 
-GUI_TEST = False
+GUI_TEST = True
 
 if GUI_TEST:
     from dummy import BraccioAdapter
@@ -93,8 +94,9 @@ class JoystickApp(BraccioAdapter):
 
         # Angle Slider
 
-        self.Angle = tk.Scale(self.frame, from_=1, to=50, resolution=1, label="Angle Resolution", orient="horizontal")
-        self.Angle.grid(row=2, column=2, pady=5)
+        self.Angle = 1
+        # self.Angle = tk.Scale(self.frame, from_=1, to=50, resolution=1, label="Angle Resolution", orient="horizontal")
+        # self.Angle.grid(row=2, column=2, pady=5)
 
         # speed Slider
 
@@ -136,7 +138,7 @@ class JoystickApp(BraccioAdapter):
 
         
     def move(self):
-        self.servo_movement(self.m1, self.m2, self.m3, self.m4, self.m5, self.m6, self.speed.get())
+        self.servo_movement(self.m1, self.m2, self.m3, self.m4, self.m5, self.m6, int(np.interp(self.speed.get(), [1, 100], [30, 10]))) #converting value from 1 to 100 to 30 to 10.
         self.update_textbox()
 
     def apply_point(self, *args):
@@ -154,7 +156,7 @@ class JoystickApp(BraccioAdapter):
         else:
             lower, upper = 0, 180
             
-        increment = self.Angle.get() * direction
+        increment = self.Angle * direction
         setattr(self, motor, max(min(getattr(self, motor) + increment, upper), lower))
         self.move()
 
@@ -208,7 +210,7 @@ class JoystickApp(BraccioAdapter):
 
     def update_textbox(self):
         self.textbox.delete('1.0', tk.END)
-        self.textbox.insert(tk.END, f"Angle Resolution: {self.Angle.get():0}\nM1: {self.m1:0}, M2: {self.m2:0}, M3: {self.m3:0}, M4: {self.m4:0}, M5: {self.m5:0}, M6: {self.m6:0}, speed: {self.speed.get()}")
+        self.textbox.insert(tk.END, f"Angle Resolution: {self.Angle:0}\nM1: {self.m1:0}, M2: {self.m2:0}, M3: {self.m3:0}, M4: {self.m4:0}, M5: {self.m5:0}, M6: {self.m6:0}, speed: {self.speed.get()}")
 
     def emergency_stop(self):
         self.root.destroy()
