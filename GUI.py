@@ -100,8 +100,10 @@ class JoystickApp(BraccioAdapter):
 
         # speed Slider
 
-        self.speed = tk.Scale(self.frame, from_=10, to=100, resolution=1, label="speed(High-Low)", orient="horizontal")
+        self.speed = tk.Scale(self.frame, from_=1, to=100, resolution=1, label="Speed %", length=500, width=50, orient="horizontal")
         self.speed.grid(row=3, column=2, pady=5)
+
+
 
         # Text Box
 
