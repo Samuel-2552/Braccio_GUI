@@ -111,13 +111,13 @@ class JoystickApp(BraccioAdapter):
         self.textbox_label.grid(row=4, column=2, pady=5)
 
         self.textbox_frame = tk.Frame(self.frame, borderwidth=2, relief="solid")
-        self.textbox_frame.grid(row=5, column=2, pady=5)
+        self.textbox_frame.grid(row=5, column=2, pady=2)
 
-        self.textbox = tk.Text(self.textbox_frame, height=5, width=60)
+        self.textbox = tk.Text(self.textbox_frame, height=2, width=60)
         self.textbox.pack(padx=10, pady=5)
 
         # Add Button for Adding Points
-        self.add_button = tk.Button(self.frame, text="Add", height=2, width=10, command=self.add_point)
+        self.add_button = tk.Button(self.frame, text="Add", height=3, width=15, command=self.add_point)
         self.add_button.grid(row=6, column=2, pady=5)
 
         # List of Points Text Box
@@ -127,16 +127,16 @@ class JoystickApp(BraccioAdapter):
         self.points_frame = tk.Frame(self.frame, borderwidth=2, relief="solid")
         self.points_frame.grid(row=8, column=2, pady=5)
 
-        self.points_textbox = tk.Text(self.points_frame, height=15, width=60)
+        self.points_textbox = tk.Text(self.points_frame, height=8, width=60)
         self.points_textbox.pack(padx=10, pady=5)
 
         # Run Button for Running Program
-        self.run_button = tk.Button(self.frame, text="Run", height=2, width=10, command=self.run)
+        self.run_button = tk.Button(self.frame, text="Run", height=3, width=15, command=self.run)
         self.run_button.grid(row=9, column=2, pady=5)
 
         # Emergency Button for stopping Program
-        self.emergency_button = tk.Button(self.frame, text="Emergency Stop",  height=2, width=20, command=self.emergency_stop)
-        self.emergency_button.grid(row=9, column=3, pady=5)
+        # self.emergency_button = tk.Button(self.frame, text="Emergency Stop",  height=2, width=20, command=self.emergency_stop)
+        # self.emergency_button.grid(row=9, column=3, pady=5)
 
         
     def move(self):
@@ -212,7 +212,7 @@ class JoystickApp(BraccioAdapter):
 
     def update_textbox(self):
         self.textbox.delete('1.0', tk.END)
-        self.textbox.insert(tk.END, f"Angle Resolution: {self.Angle:0}\nM1: {self.m1:0}, M2: {self.m2:0}, M3: {self.m3:0}, M4: {self.m4:0}, M5: {self.m5:0}, M6: {self.m6:0}, speed: {self.speed.get()}")
+        self.textbox.insert(tk.END, f"M1: {self.m1:0}, M2: {self.m2:0}, M3: {self.m3:0}, M4: {self.m4:0}, M5: {self.m5:0}, M6: {self.m6:0}, speed: {self.speed.get()}")
 
     def emergency_stop(self):
         self.root.destroy()
