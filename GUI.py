@@ -2,13 +2,13 @@ import tkinter as tk
 from braccio_adapter import BraccioAdapter
 import numpy as np
 
-GUI_TEST = True
+GUI_TEST = False
 
 if GUI_TEST:
     from dummy import BraccioAdapter
 
 class JoystickApp(BraccioAdapter):
-    def __init__(self, root, serial_port_robot_magnet="COM4"):
+    def __init__(self, root, serial_port_robot_magnet="/dev/ttyACM0"):
         super().__init__(serial_port_robot_magnet,)
         self.home_position()
         self.root = root
@@ -31,8 +31,8 @@ class JoystickApp(BraccioAdapter):
         self.label.grid(row=0, column=2, pady=5)
 
         # continuous button press
-        repeatdelay = 100
-        repeatinterval = 100
+        repeatdelay = 1
+        repeatinterval = 1
 
         self.control_frame = tk.Frame(self.frame, borderwidth=2, relief="solid")
         self.control_frame.grid(row=1, column=1, pady=10)
