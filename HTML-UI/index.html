@@ -13,6 +13,7 @@
         body {
             margin: 0;
             padding: 0;
+            background-color: rgb(0, 0, 0);
         }
 
         .controller {
@@ -31,8 +32,8 @@
         }
 
         .joystick {
-            width: 400px;
-            height: 400px;
+            width: 50vh;
+            height: 50vh;
             border-radius: 50%;
             background-color: rgb(20, 20, 20);
             position: relative;
@@ -58,13 +59,16 @@
             transform: rotate(calc(0deg - var(--rotate)));
         }
 
-        .button-wrap:active {
+        /* .button-wrap:active {
             filter: drop-shadow(1px 15px 1px rgb(0, 62, 62));
         }
 
         .button-wrap:active button {
             transform: scale(0.9);
-        }
+            transform: rotateZ(var(--rotate));
+        } */
+
+        
 
         .button-wrap {
             filter: drop-shadow(1px 10px 1px rgb(89, 40, 0));
@@ -82,28 +86,28 @@
         <div class="wrapper">
             <div class="joystick joystick-1">
                 <span class="button-wrap" style="--left: 37%; --top: 4%;">
-                    <button type="button" id="j1-up" style="--rotate: 0deg;">
+                    <button type="button" id="shoulder+" style="--rotate: 0deg;">
                         <span class="name">
                             BASE
                         </span>
                     </button>
                 </span>
                 <span class="button-wrap" style="--left: 30%; --top: 32%;">
-                    <button type="button" id="j1-up" style="--rotate: 90deg;">
+                    <button type="button" id="base+" style="--rotate: 90deg;">
                         <span class="name">
                             BASE
                         </span>
                     </button>
                 </span>
                 <span class="button-wrap" style="--left: -30%; --top:55%;">
-                    <button type="button" id="j1-up" style="--rotate: 180deg">
+                    <button type="button" id="shoulder-" style="--rotate: 180deg">
                         <span class="name">
                             BASE
                         </span>
                     </button>
                 </span>
                 <span class="button-wrap" style="--left: 10%; --top: -12%;">
-                    <button type="button" id="j1-up" style="--rotate: 270deg">
+                    <button type="button" id="base-" style="--rotate: 270deg">
                         <span class="name">
                             BASE
                         </span>
@@ -112,28 +116,28 @@
             </div>
             <div class="joystick joystick-2" >
                 <span class="button-wrap" style="--left: 37%; --top: 4%;">
-                    <button type="button" id="j1-up" style="--rotate: 0deg;">
+                    <button type="button" id="elbow+" style="--rotate: 0deg;">
                         <span class="name">
                             BASE
                         </span>
                     </button>
                 </span>
                 <span class="button-wrap" style="--left: 30%; --top: 32%;">
-                    <button type="button" id="j1-up" style="--rotate: 90deg;">
+                    <button type="button" id="wrist+" style="--rotate: 90deg;">
                         <span class="name">
                             BASE
                         </span>
                     </button>
                 </span>
                 <span class="button-wrap" style="--left: -30%; --top:55%;">
-                    <button type="button" id="j1-up" style="--rotate: 180deg">
+                    <button type="button" id="elbow-" style="--rotate: 180deg">
                         <span class="name">
                             BASE
                         </span>
                     </button>
                 </span>
                 <span class="button-wrap" style="--left: 10%; --top: -12%;">
-                    <button type="button" id="j1-up" style="--rotate: 270deg">
+                    <button type="button" id="wrist-" style="--rotate: 270deg">
                         <span class="name">
                             BASE
                         </span>
@@ -142,28 +146,28 @@
             </div>
             <div class="joystick joystick-3">
                 <span class="button-wrap" style="--left: 37%; --top: 4%;">
-                    <button type="button" id="j1-up" style="--rotate: 0deg;">
+                    <button type="button" id="roll+" style="--rotate: 0deg;">
                         <span class="name">
                             BASE
                         </span>
                     </button>
                 </span>
                 <span class="button-wrap" style="--left: 30%; --top: 32%;">
-                    <button type="button" id="j1-up" style="--rotate: 90deg;">
+                    <button type="button" id="hand+" style="--rotate: 90deg;">
                         <span class="name">
                             BASE
                         </span>
                     </button>
                 </span>
                 <span class="button-wrap" style="--left: -30%; --top:55%;">
-                    <button type="button" id="j1-up" style="--rotate: 180deg">
+                    <button type="button" id="roll-" style="--rotate: 180deg">
                         <span class="name">
                             BASE
                         </span>
                     </button>
                 </span>
                 <span class="button-wrap" style="--left: 10%; --top: -12%;">
-                    <button type="button" id="j1-up" style="--rotate: 270deg">
+                    <button type="button" id="hand-" style="--rotate: 270deg">
                         <span class="name">
                             BASE
                         </span>
@@ -178,18 +182,33 @@
     const button = document.querySelectorAll("button");
     const button_wrap = document.querySelectorAll('.button-wrap');
     let isButtonDown = false;
+    
+    var control = [{
+        'base':0,
+        'shoulder':0,
+        'elbow': 0,
+        'wrist':0,
+        'roll':0,
+        'hand':0,
+    }]
+    
 
     button.forEach(function(button) {
         button.addEventListener('touchstart', (event) => {
             event.preventDefault();
             button.style.transform = 'scale(0.9) rotateZ(var(--rotate))';
             isButtonDown = true;
-            console.log("1");
-            performActionContinuously();
+            var control = button.id.substring(0, button.id.length-1);
+            performActionContinuously(control, button.id.charAt(button.id.length - 1));
         });
-        console.log(button);
+        // console.log(button);
 
         button.addEventListener('touchend', () => {
+            isButtonDown = false;
+            button.style.transform = 'scale(1) rotateZ(var(--rotate))';
+        });
+
+        button.addEventListener('touchmove', () => {
             isButtonDown = false;
             button.style.transform = 'scale(1) rotateZ(var(--rotate))';
         });
@@ -199,9 +218,21 @@
         });
         })
 
-    function performActionContinuously() {
+    function performActionContinuously(data, op) {
         if (isButtonDown) {
-            setTimeout(performActionContinuously, 100);
+            if(op == '+'){
+                control[0][data] += 1; 
+                console.log(control[0][data]);
+                setTimeout(performActionContinuously, 100, data,op);
+            }
+            else if(op == '-'){
+                if(control[0][data] == 0){
+                    return;
+                }
+                control[0][data] -= 1; 
+            console.log(control[0][data]);
+            setTimeout(performActionContinuously, 100, data,op);
+            }
         }
     }
 
