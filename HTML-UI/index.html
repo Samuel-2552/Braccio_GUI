@@ -86,6 +86,15 @@
             background-color: orange;
         }
 
+        input[type="range"]::after {
+            content: attr(data-speed);
+            color: rgb(0, 0, 0);
+            position: absolute;
+            top: -5px;
+            left: 2px;
+            transform: rotateZ(90deg);
+        }
+
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
@@ -102,29 +111,30 @@
             overflow: hidden;
         }
 
-        .braccio-options{
+        .braccio-options {
             width: fit-content;
             height: fit-content;
             position: absolute;
-            left:20%;
-            top:0;
+            left: 20%;
+            top: 0;
             background-color: rgb(33, 32, 32);
             padding: 10px;
             border-radius: 10px;
         }
 
-        .options-container{
+        .options-container {
             width: 100px;
         }
 
-        .options{
+        .options {
             text-decoration: none;
             list-style: none;
             padding: 0;
-            
+
         }
 
-        ul li button, .Add-btn{
+        ul li button,
+        .Add-btn {
             width: 100px;
             height: 50px;
             transition: transform 0.5s;
@@ -134,16 +144,18 @@
             filter: drop-shadow(1px 7px 1px rgb(112, 64, 13))
         }
 
-        .Add-btn{
+        .Add-btn {
             height: 30px;
             filter: drop-shadow(1px 4px 1px rgb(112, 64, 13))
         }
 
-        ul li button:active, .Add-btn:active{
+        ul li button:active,
+        .Add-btn:active {
             transform: scale(0.9);
         }
 
-        #cb-2, #gb-2{
+        #cb-2,
+        #gb-2 {
             position: absolute;
             left: 10px;
             transform: translateX(10%) rotateY(180deg);
@@ -151,12 +163,13 @@
             transform-origin: center;
         }
 
-        #cb-1, #gb-1{
+        #cb-1,
+        #gb-1 {
             backface-visibility: hidden;
             transform-origin: center;
         }
 
-        .braccio-display{
+        .braccio-display {
             position: absolute;
             left: 50%;
             top: 0;
@@ -166,19 +179,19 @@
             background-color: rgb(30, 30, 30);
         }
 
-        .display-wrapper{
+        .display-wrapper {
             display: flex;
             flex-direction: row;
             flex-wrap: wrap;
             justify-content: space-evenly;
             position: relative;
             left: 50%;
-            top:10%;
+            top: 10%;
             transform: translate(-50%, 0);
             row-gap: 20px;
         }
 
-        .position{
+        .position {
             width: 70%;
             height: 30px;
             border-radius: 10px;
@@ -187,7 +200,7 @@
             color: orange
         }
 
-        .Points{
+        .Points {
             width: 70%;
             height: 175px;
             border-radius: 10px;
@@ -196,21 +209,21 @@
             background-color: transparent;
             color: orange;
             font-size: 20px;
-            resize:none;
+            resize: none;
         }
 
-        .fullscreen{
+        .fullscreen {
             position: absolute;
             width: 100%;
             height: 100%;
             background-color: antiquewhite;
-            top:0;
-            left:0;
+            top: 0;
+            left: 0;
             z-index: 1;
             display: block;
         }
 
-        .modal{
+        .modal {
             width: 30%;
             height: 30%;
             position: relative;
@@ -220,12 +233,12 @@
             background-color: aquamarine;
         }
 
-        .info{
+        .info {
             color: orange;
             padding: 20px;
         }
 
-        .fullscreen-btn{
+        .fullscreen-btn {
             width: 20%;
             height: 20%;
             position: relative;
@@ -236,16 +249,15 @@
             filter: drop-shadow(1px 7px 1px rgb(112, 64, 13))
         }
 
-        .fullscreen-btn:active{
+        .fullscreen-btn:active {
             transform: scale(0.9);
         }
-
     </style>
 
 </head>
 
 <body>
-    <div class="fullscreen" id="fullscreen">
+    <!-- <div class="fullscreen" id="fullscreen">
         <div class="modal">
             <div class="info">
                 <h2>Enter Into FullScreen Mode</h2>
@@ -261,22 +273,21 @@
                     console.error("Fullscreen request failed:", error);
                 });
                 document.getElementById("fullscreen").style.display = "none";
-            } else {
-                document.exitFullscreen();
-                document.getElementById("fullscreen").style.display = "block";
+                document.getElementById("fullscreen").style.zIndex = "-1"
             }
         });
-    </script>
+    </script> -->
     <div class="controller">
         <div class="wrapper">
             <div class="speed_controller" id="speed_controller">
-                <input type="range" min="1" max="100" step="1" value="100" onchange="speedController()" id="speed"/>
+                <input type="range" min="1" max="100" step="1" value="1" oninput="speedController()" id="speed"
+                    data-speed="1" />
             </div>
             <script type="text/javascript">
                 var speed = document.getElementById("speed").value;
-                function speedController(){
+                function speedController() {
                     speed = document.getElementById("speed").value;
-                    console.log(speed);
+                    document.getElementById("speed").setAttribute("data-speed", speed);
                 }
             </script>
             <div class="braccio-options">
@@ -314,39 +325,6 @@
                     </ul>
                 </div>
             </div>
-            <script type="text/javascript">
-                var joint = true;
-                var grab = true;
-                var coordinate_button = document.querySelectorAll(".coordinate-button");
-                coordinate_button.forEach((btn) =>{
-                    btn.addEventListener("click", () => {
-                        if(joint){
-                            document.getElementById("cb-2").style.transform = "rotateY(0deg)"
-                            document.getElementById("cb-1").style.transform = "rotateY(180deg)"
-                        }
-                        else{
-                            document.getElementById("cb-2").style.transform = "rotateY(180deg)"
-                            document.getElementById("cb-1").style.transform = "rotateY(0deg)"
-                        }
-                        joint = !joint;
-                    });
-                })
-
-                var grab_button = document.querySelectorAll(".grab-button");
-                grab_button.forEach((btn) =>{
-                    btn.addEventListener("click", () => {
-                        if(grab){
-                            document.getElementById("gb-2").style.transform = "rotateY(0deg)"
-                            document.getElementById("gb-1").style.transform = "rotateY(180deg)"
-                        }
-                        else{
-                            document.getElementById("gb-2").style.transform = "rotateY(180deg)"
-                            document.getElementById("gb-1").style.transform = "rotateY(0deg)"
-                        }
-                        grab = !grab;
-                    });
-                })
-            </script>
             <div class="braccio-display">
                 <div class="display-wrapper">
                     <div class="position">
@@ -361,28 +339,28 @@
                 <span class="button-wrap" style="--left: 37%; --top: 4%;">
                     <button type="button" class="button" id="shoulder+" style="--rotate: 0deg;">
                         <span class="name">
-                            BASE
+                            Shoulder+
                         </span>
                     </button>
                 </span>
                 <span class="button-wrap" style="--left: 30%; --top: 32%;">
                     <button type="button" class="button" id="base+" style="--rotate: 90deg;">
                         <span class="name">
-                            BASE
+                            Base+
                         </span>
                     </button>
                 </span>
                 <span class="button-wrap" style="--left: -30%; --top:55%;">
                     <button type="button" class="button" id="shoulder-" style="--rotate: 180deg">
                         <span class="name">
-                            BASE
+                            Shoulder-
                         </span>
                     </button>
                 </span>
                 <span class="button-wrap" style="--left: 10%; --top: -12%;">
                     <button type="button" class="button" id="base-" style="--rotate: 270deg">
                         <span class="name">
-                            BASE
+                            Base-
                         </span>
                     </button>
                 </span>
@@ -391,28 +369,28 @@
                 <span class="button-wrap" style="--left: 37%; --top: 4%;">
                     <button type="button" class="button" id="elbow+" style="--rotate: 0deg;">
                         <span class="name">
-                            BASE
+                            M4+
                         </span>
                     </button>
                 </span>
                 <span class="button-wrap" style="--left: 30%; --top: 32%;">
                     <button type="button" class="button" id="wrist+" style="--rotate: 90deg;">
                         <span class="name">
-                            BASE
+                            M3+
                         </span>
                     </button>
                 </span>
                 <span class="button-wrap" style="--left: -30%; --top:55%;">
                     <button type="button" class="button" id="elbow-" style="--rotate: 180deg">
                         <span class="name">
-                            BASE
+                            M4-
                         </span>
                     </button>
                 </span>
                 <span class="button-wrap" style="--left: 10%; --top: -12%;">
                     <button type="button" class="button" id="wrist-" style="--rotate: 270deg">
                         <span class="name">
-                            BASE
+                            M3-
                         </span>
                     </button>
                 </span>
@@ -421,28 +399,28 @@
                 <span class="button-wrap" style="--left: 37%; --top: 4%;">
                     <button type="button" class="button" id="roll+" style="--rotate: 0deg;">
                         <span class="name">
-                            BASE
+                            M5+
                         </span>
                     </button>
                 </span>
                 <span class="button-wrap" style="--left: 30%; --top: 32%;">
                     <button type="button" class="button" id="hand+" style="--rotate: 90deg;">
                         <span class="name">
-                            BASE
+                            M6+
                         </span>
                     </button>
                 </span>
                 <span class="button-wrap" style="--left: -30%; --top:55%;">
                     <button type="button" class="button" id="roll-" style="--rotate: 180deg">
                         <span class="name">
-                            BASE
+                            M5-
                         </span>
                     </button>
                 </span>
                 <span class="button-wrap" style="--left: 10%; --top: -12%;">
                     <button type="button" class="button" id="hand-" style="--rotate: 270deg">
                         <span class="name">
-                            BASE
+                            M6-
                         </span>
                     </button>
                 </span>
@@ -458,12 +436,68 @@
 
     var control = [{
         'base': 0,
-        'shoulder': 0,
+        'shoulder': 15,
         'elbow': 0,
         'wrist': 0,
         'roll': 0,
-        'hand': 0,
+        'hand': 10,
+    },{
+        'base': 0,
+        'shoulder': 15,
+        'elbow': 0,
+        'wrist': 0,
+        'roll': 0,
+        'hand': 10,
+    },{
+        'base': 180,
+        'shoulder': 165,
+        'elbow': 180,
+        'wrist': 180,
+        'roll': 180,
+        'hand': 73,
     }]
+
+    const joint_ = ['Shoulder+', 'Base+', 'Shoulder-', 'Base-', 'M4+', 'M3-', 'M4-', 'M3-', 'M5+', 'M6+', 'M5-', 'M6-']
+    const world_ = ['X+', 'Y+', 'X-', 'Y-', 'M4+', 'Z+', 'M4-', 'Z-', 'M5+', 'M6+', 'M5-', 'M6-']
+    const name = document.querySelectorAll(".button")
+
+    var joint = true;
+    var grab = true;
+    var coordinate_button = document.querySelectorAll(".coordinate-button");
+    coordinate_button.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            if (joint) {
+                document.getElementById("cb-2").style.transform = "rotateY(0deg)"
+                document.getElementById("cb-1").style.transform = "rotateY(180deg)"
+                for (var i = 0; i < 12; i++) {
+                    document.getElementById(name[i].id).querySelector(".name").innerHTML = world_[i];
+                }
+            }
+            else {
+                document.getElementById("cb-2").style.transform = "rotateY(180deg)"
+                document.getElementById("cb-1").style.transform = "rotateY(0deg)"
+                for (var i = 0; i < 12; i++) {
+                    document.getElementById(name[i].id).querySelector(".name").innerHTML = joint_[i];
+                }
+            }
+            joint = !joint;
+        });
+    })
+
+    var grab_button = document.querySelectorAll(".grab-button");
+    grab_button.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            if (grab) {
+                document.getElementById("gb-2").style.transform = "rotateY(0deg)"
+                document.getElementById("gb-1").style.transform = "rotateY(180deg)"
+            }
+            else {
+                document.getElementById("gb-2").style.transform = "rotateY(180deg)"
+                document.getElementById("gb-1").style.transform = "rotateY(0deg)"
+            }
+            grab = !grab;
+        });
+    })
 
 
     button.forEach(function (button) {
@@ -508,12 +542,15 @@
     function performActionContinuously(data, op) {
         if (isButtonDown) {
             if (op == '+') {
+                if(control[0][data] == control[2][data]){
+                    return;
+                }
                 control[0][data] += 1;
                 console.log(control[0][data]);
                 setTimeout(performActionContinuously, 100, data, op);
             }
             else if (op == '-') {
-                if (control[0][data] == 0) {
+                if (control[0][data] == control[1][data]) {
                     return;
                 }
                 control[0][data] -= 1;
@@ -524,4 +561,5 @@
     }
 
 </script>
+
 </html>
