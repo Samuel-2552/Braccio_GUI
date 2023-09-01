@@ -25,7 +25,7 @@ class JoystickApp(BraccioAdapter):
         self.points_alone = []
 
         self.frame = tk.Frame(self.root)
-        self.frame.pack(padx=100, pady=100)
+        self.frame.pack(padx=10, pady=10)
 
         self.label = tk.Label(self.frame, text="Joint Co-ordinate", font=("Helvetica", 16))
         self.label.grid(row=0, column=2, pady=5)
