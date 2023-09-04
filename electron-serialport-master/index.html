@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- clip-path: path('M 0 20 C 0,10 10,0 20,0 L 80 0 C 90,0 100,10 100,20 L 100 80 C 100,90 95,95 60,130 C 55,135 50,135 45,130 L 5 95 C 0,90 0,80, 0,80'); -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+        integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: rgb(0, 0, 0);
+        }
+
+        .controller {
+            height: 100vh;
+            background-color: rgb(0, 0, 0);
+            position: relative;
+        }
+
+        .wrapper {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            height: 100%;
+            align-items: end;
+        }
+
+        .joystick {
+            width: 47vh;
+            height: 47vh;
+            border-radius: 50%;
+            background-color: rgb(20, 20, 20);
+            position: relative;
+        }
+
+        .button {
+            width: 30%;
+            height: 40%;
+            border: none;
+            clip-path: path('M 0 20 C 0,10 10,0 20,0 L 80 0 C 90,0 100,10 100,20 L 100 85 C 100,90 95,95 60,130 C 55,135 50,135 45,130 L 5 95 C 0,90 0,80, 0,80');
+            background-color: rgb(205, 133, 52);
+            outline: none;
+            cursor: pointer;
+            touch-action: manipulation;
+            position: relative;
+            transform: rotateZ(var(--rotate));
+        }
+
+        .name {
+            position: absolute;
+            top: 20%;
+            left: 28%;
+            transform: rotate(calc(0deg - var(--rotate)));
+        }
+
+        .button-wrap {
+            filter: drop-shadow(1px 10px 1px rgb(89, 40, 0));
+            position: relative;
+            left: var(--left);
+            top: var(--top);
+            touch-action: manipulation;
+        }
+
+        .speed_controller {
+            display: block;
+            position: absolute;
+            right: 25%;
+            top: 0;
+            width: fit-content;
+            height: fit-content;
+        }
+
+        input[type="range"] {
+            width: 300px;
+            height: 5px;
+            transform: rotateZ(-90deg);
+            transform-origin: right top;
+            -webkit-appearance: none;
+            appearance: none;
+            background-color: orange;
+        }
+
+        input[type="range"]::after {
+            content: attr(data-speed);
+            color: rgb(0, 0, 0);
+            position: absolute;
+            top: -5px;
+            left: 2px;
+            transform: rotateZ(90deg);
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 50px;
+            width: 10px;
+            background-color: rgb(255, 128, 60);
+            border-radius: 10px;
+            box-shadow: -407px 0 0 400px rgb(255, 132, 71);
+        }
+
+        input[type="range"]::-webkit-slider-runnable-track {
+            background: #282828;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .braccio-options {
+            width: fit-content;
+            height: fit-content;
+            position: absolute;
+            right: 72vw;
+            top: 10px;
+            background-color: rgb(33, 32, 32);
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .options-container {
+            width: 100px;
+        }
+
+        .options {
+            text-decoration: none;
+            list-style: none;
+            padding: 0;
+
+        }
+
+        ul li button,
+        .Add-btn {
+            width: 100px;
+            height: 50px;
+            transition: transform 0.5s;
+            background-color: orange;
+            font-size: 15px;
+            border-radius: 20px;
+            filter: drop-shadow(1px 7px 1px rgb(112, 64, 13))
+        }
+
+        .Add-btn {
+            height: 30px;
+            filter: drop-shadow(1px 4px 1px rgb(112, 64, 13))
+        }
+
+        ul li button:active,
+        .Add-btn:active, #reconnect-btn:active {
+            transform: scale(0.9);
+        }
+
+        #cb-2,
+        #gb-2 {
+            position: absolute;
+            left: 10px;
+            transform: translateX(10%) rotateY(180deg);
+            backface-visibility: hidden;
+            transform-origin: center;
+        }
+
+        #cb-1,
+        #gb-1 {
+            backface-visibility: hidden;
+            transform-origin: center;
+        }
+
+        .braccio-display {
+            position: absolute;
+            left: 50%;
+            top: 10px;
+            transform: translate(-50%, 0);
+            width: 40%;
+            height: 300px;
+            background-color: rgb(30, 30, 30);
+            border-radius: 10px;
+            /* max-width: fit-content; */
+        }
+
+        .display-wrapper {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-evenly;
+            position: relative;
+            left: 50%;
+            top: 10%;
+            transform: translate(-50%, 0);
+            row-gap: 20px;
+        }
+
+        .position {
+            width: 70%;
+            /* height: 30px; */
+            min-height: fit-content;
+            border-radius: 10px;
+            border: 1px solid orange;
+            box-shadow: 0 0 10px 2px rgba(242, 159, 123, 0.718);
+            color: orange
+        }
+
+        .Points {
+            width: 70%;
+            height: 175px;
+            border-radius: 10px;
+            border: 1px solid orange;
+            box-shadow: 0 0 10px 2px rgba(242, 159, 123, 0.718);
+            background-color: transparent;
+            color: orange;
+            font-size: 16px;
+            resize: none;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .error {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(69, 69, 69, 0.317);
+            top: 0;
+            left: 0;
+            z-index: 1;
+            display: none;
+        }
+
+        .error-msg{
+            width: 30%;
+            height: 30%;
+            position: relative;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            border: 2px solid orange;
+            background-color: rgba(69, 69, 69, 0.317);
+            box-shadow: 0 0 20px 5px rgba(255, 166, 0, 0.572);
+            justify-content: center;
+            flex-direction: column;
+            display: flex;
+            align-items: center;
+        }
+
+        h1{
+            color: orange;
+        }
+
+        .modal {
+            width: 30%;
+            height: 30%;
+            position: relative;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background-color: aquamarine;
+        }
+
+        .info {
+            color: orange;
+            padding: 20px;
+        }
+
+        .fullscreen-btn {
+            width: 20%;
+            height: 20%;
+            position: relative;
+            left: 70%;
+            background-color: orange;
+            font-size: 15px;
+            border-radius: 20px;
+            filter: drop-shadow(1px 7px 1px rgb(112, 64, 13))
+        }
+
+        .fullscreen-btn:active {
+            transform: scale(0.9);
+        }
+
+        #reconnect-btn {
+            background-color: orange;
+            width: inherit;
+            height: inherit;
+            border-radius: 20px;
+            filter: drop-shadow(1px 7px 1px rgb(112, 64, 13))
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- <div class="fullscreen" id="fullscreen">
+        <div class="modal">
+            <div class="info">
+                <h2>Enter Into FullScreen Mode</h2>
+            </div>
+            <button type="button" class="fullscreen-btn" id="fullscreen-btn">Enter</button>
+        </div>
+    </div>
+    <script>
+        document.getElementById("fullscreen-btn").addEventListener('click', () =>{
+            const element = document.documentElement;
+            if (!document.fullscreenElement) {
+                element.requestFullscreen().catch(error => {
+                    console.error("Fullscreen request failed:", error);
+                });
+                document.getElementById("fullscreen").style.display = "none";
+                document.getElementById("fullscreen").style.zIndex = "-1"
+            }
+        });
+    </script> -->
+    <!-- <div class="error" id="error">
+        <div class="error-msg">
+            <h1 id="error-msg"></h1>
+            <button type="button" id="reconnect-btn">RECONNECT</button>
+        </div>
+    </div> -->
+    <div class="controller">
+        <div class="wrapper">
+            <div class="speed_controller" id="speed_controller">
+                <input type="range" min="1" max="100" step="1" value="1" oninput="speedController()" id="speed"
+                    data-speed="1" />
+            </div>
+            <!-- <script type="text/javascript">
+                var speed = document.getElementById("speed").value;
+                function speedController() {
+                    speed = document.getElementById("speed").value;
+                    document.getElementById("speed").setAttribute("data-speed", speed);
+                }
+            </script> -->
+            <div class="braccio-options">
+                <div class="options-container">
+                    <ul class="options">
+                        <li>
+                            <button type="button" class="coordinate-button" id="cb-1">
+                                World Coordinate
+                            </button>
+                            <button type="button" class="coordinate-button" id="cb-2">
+                                Joint Coordinate
+                            </button>
+                        </li>
+                        <br>
+                        <li>
+                            <button type="button" class="options-button">
+                                HOME
+                            </button>
+                        </li>
+                        <br>
+                        <li>
+                            <button type="button" class="options-button">
+                                SAFE
+                            </button>
+                        </li>
+                        <br>
+                        <li>
+                            <button type="button" class="grab-button" id="gb-1">
+                                Open
+                            </button>
+                            <button type="button" class="grab-button" id="gb-2">
+                                Close
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="braccio-display">
+                <div class="display-wrapper">
+                    <div class="position" id="position">
+
+                    </div>
+                    <button type="button" class="Add-btn" id="Add-btn" onclick="addPoints()">Add</button>
+                    <textarea class="Points" id="Points" data-line = 0></textarea>
+                    <button type="button" class="Add-btn">Run</button>
+                </div>
+            </div>
+            <div class="joystick joystick-1">
+                <span class="button-wrap" style="--left: 37%; --top: 4%;">
+                    <button type="button" class="button" id="shoulder+" style="--rotate: 0deg;">
+                        <span class="name">
+                            Shoulder+
+                        </span>
+                    </button>
+                </span>
+                <span class="button-wrap" style="--left: 30%; --top: 32%;">
+                    <button type="button" class="button" id="base+" style="--rotate: 90deg;">
+                        <span class="name">
+                            Base+
+                        </span>
+                    </button>
+                </span>
+                <span class="button-wrap" style="--left: -30%; --top:55%;">
+                    <button type="button" class="button" id="shoulder-" style="--rotate: 180deg">
+                        <span class="name">
+                            Shoulder-
+                        </span>
+                    </button>
+                </span>
+                <span class="button-wrap" style="--left: 10%; --top: -12%;">
+                    <button type="button" class="button" id="base-" style="--rotate: 270deg">
+                        <span class="name">
+                            Base-
+                        </span>
+                    </button>
+                </span>
+            </div>
+            <div class="joystick joystick-2">
+                <span class="button-wrap" style="--left: 37%; --top: 4%;">
+                    <button type="button" class="button" id="elbow+" style="--rotate: 0deg;">
+                        <span class="name">
+                            M3+
+                        </span>
+                    </button>
+                </span>
+                <span class="button-wrap" style="--left: 30%; --top: 32%;">
+                    <button type="button" class="button" id="wrist+" style="--rotate: 90deg;">
+                        <span class="name">
+                            M4+
+                        </span>
+                    </button>
+                </span>
+                <span class="button-wrap" style="--left: -30%; --top:55%;">
+                    <button type="button" class="button" id="elbow-" style="--rotate: 180deg">
+                        <span class="name">
+                            M3-
+                        </span>
+                    </button>
+                </span>
+                <span class="button-wrap" style="--left: 10%; --top: -12%;">
+                    <button type="button" class="button" id="wrist-" style="--rotate: 270deg">
+                        <span class="name">
+                            M4-
+                        </span>
+                    </button>
+                </span>
+            </div>
+            <div class="joystick joystick-3">
+                <span class="button-wrap" style="--left: 37%; --top: 4%;">
+                    <button type="button" class="button" id="roll+" style="--rotate: 0deg;">
+                        <span class="name">
+                            M5+
+                        </span>
+                    </button>
+                </span>
+                <span class="button-wrap" style="--left: 30%; --top: 32%;">
+                    <button type="button" class="button" id="hand+" style="--rotate: 90deg;">
+                        <span class="name">
+                            M6+
+                        </span>
+                    </button>
+                </span>
+                <span class="button-wrap" style="--left: -30%; --top:55%;">
+                    <button type="button" class="button" id="roll-" style="--rotate: 180deg">
+                        <span class="name">
+                            M5-
+                        </span>
+                    </button>
+                </span>
+                <span class="button-wrap" style="--left: 10%; --top: -12%;">
+                    <button type="button" class="button" id="hand-" style="--rotate: 270deg">
+                        <span class="name">
+                            M6-
+                        </span>
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="./renderer.js" ></script>
+
+</html>
