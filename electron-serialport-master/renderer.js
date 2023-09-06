@@ -10,7 +10,8 @@ var decoder = new TextDecoder('utf-8');
 
 
 function connect(){
-        myPort = new SerialPort({ path: 'COM8', baudRate: 250000});
+    SerialPort.list().then((ports) => {
+        myPort = new SerialPort({ path: ports[0].path, baudRate: 250000});
         myPort.on('open',function(){
             console.log(myPort);
         })
@@ -20,6 +21,7 @@ function connect(){
         myPort.on('close',function(){
             console.log('close');
         });
+    })
 }
 
 window.addEventListener('DOMContentLoaded',connect);
