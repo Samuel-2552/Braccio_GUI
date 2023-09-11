@@ -24,10 +24,10 @@ function createWindow() {
     mainWindow.on('closed', function () {
         mainWindow = null
     })
-    mainWindow.webContents.on('before-input-event', (event, input) => {
-        event.preventDefault();
-    });
-    Menu.setApplicationMenu(null);
+    // mainWindow.webContents.on('before-input-event', (event, input) => {
+    //     event.preventDefault();
+    // });
+    // Menu.setApplicationMenu(null);
 }
 app.on('ready', createWindow)
 

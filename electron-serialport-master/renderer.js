@@ -1,6 +1,5 @@
 // import 
 const serialport = require('serialport');
-
 //Reference of the buttons
 const SerialPort = serialport.SerialPort;
 const button = document.querySelectorAll(".button");
@@ -11,6 +10,7 @@ const grab_button = document.querySelectorAll(".grab-button");
 const coordinate_button = document.querySelectorAll(".coordinate-button");
 const home_button = document.getElementById("home-button");
 const safe_button = document.getElementById("safe-button");
+const run_button = document.getElementById("run-btn");
 const joint_ = ['Shoulder+', 'Base+', 'Shoulder-', 'Base-', 'M3+', 'M4-', 'M3-', 'M4-', 'M5+', 'M6+', 'M5-', 'M6-']
 const world_ = ['X+', 'Y+', 'X-', 'Y-', 'Z+', 'M4+', 'Z-', 'M4-', 'M5+', 'M6+', 'M5-', 'M6-']
 
@@ -18,13 +18,14 @@ const world_ = ['X+', 'Y+', 'X-', 'Y-', 'Z+', 'M4+', 'Z-', 'M4-', 'M5+', 'M6+', 
 var speed = document.getElementById("speed").value;
 var isButtonDown = false;
 var myPort;
+var parser;
 var control = [{
     'base': 0,
     'shoulder': 43,
     'elbow': 180,
     'wrist': 0,
     'roll': 170,
-    'hand': 73,
+    'hand': 10,
 }, {
     'base': 0,
     'shoulder': 15,
@@ -43,6 +44,7 @@ var control = [{
 var joint = true;
 var grab = true;
 var working = false;
+var Points_array = [];
 //Encoder and Decoder for encoding and decoding data that has been received and sent to the Braccio
 var encoder = new TextEncoder('utf-8');
 var decoder = new TextDecoder('utf-8');
@@ -57,7 +59,7 @@ function connect(){
             return;
         }
         working = true;
-        myPort = new SerialPort({ path: ports[0].path, baudRate: 250000});
+        myPort = new SerialPort({ path: 'COM7', baudRate: 115200});
         myPort.on('open',function(){
             _init();
         })
@@ -74,10 +76,20 @@ window.addEventListener('DOMContentLoaded',connect);
 //Initializes the controller
 function _init(){
     position.innerHTML = "M1:" + control[0]['base'] + " M2:" + control[0]['shoulder'] + " M3:" + control[0]['elbow'] + " M4:" + control[0]['wrist'] + " M5:" + control[0]['roll'] + " M6:" + control[0]['hand'] + " speed:" + speed;
+    myPort.write(encoder.encode(getPosition()));
     Button();
+    if (grab) {
+        document.getElementById("gb-2").style.transform = "rotateY(0deg)"
+        document.getElementById("gb-1").style.transform = "rotateY(180deg)"
+        control[0].hand = 10;
+    }
+    else {
+        document.getElementById("gb-2").style.transform = "rotateY(180deg)"
+        document.getElementById("gb-1").style.transform = "rotateY(0deg)"
+        control[0].hand = 73
+    }
+    grab = false;
 }
-
-
 
 //Access button functionality
 function Button(){
@@ -145,12 +157,16 @@ function Button(){
             if (grab) {
                 document.getElementById("gb-2").style.transform = "rotateY(0deg)"
                 document.getElementById("gb-1").style.transform = "rotateY(180deg)"
+                control[0].hand = 10;
             }
             else {
                 document.getElementById("gb-2").style.transform = "rotateY(180deg)"
                 document.getElementById("gb-1").style.transform = "rotateY(0deg)"
+                control[0].hand = 73
             }
             grab = !grab;
+            updatePosition();
+            myPort.write(encoder.encode(getPosition()));
         });
     })
 
@@ -160,7 +176,7 @@ function Button(){
         control[0].elbow = 180;
         control[0].wrist = 0;
         control[0].roll = 170;
-        control[0].hand = 73;
+        control[0].hand = 10;
         var action = "P"+ speed + "," + control[0]['base'] + "," + control[0]['shoulder'] + "," + control[0]['elbow'] + "," + control[0]['wrist'] + "," + control[0]['roll'] + "," + control[0]['hand'] + "\n";
         myPort.write(encoder.encode(action));
         updatePosition();
@@ -177,30 +193,42 @@ function Button(){
         myPort.write(encoder.encode(action));
         updatePosition();
     });
+
+    run_button.addEventListener("click", function(){
+        Points_array.forEach((p) =>{
+            myPort.write(encoder.encode(p));
+            console.log(p);
+        })
+    })
 }
 
 
 //Processes the button events
 function performActionContinuously(data, op) {
-    var action = "P"+ speed + "," + control[0]['base'] + "," + control[0]['shoulder'] + "," + control[0]['elbow'] + "," + control[0]['wrist'] + "," + control[0]['roll'] + "," + control[0]['hand'] + "\n";
+    var action = getPosition();
+    console.log(action);
     if (isButtonDown) {
         if (op == '+') {
             if (control[0][data] == control[2][data]) {
+                control[0][data] = control[2][data];
                 return;
             }
             control[0][data] += 1;
             myPort.write(encoder.encode(action));
-            setTimeout(performActionContinuously, 10, data, op);
+            setTimeout(performActionContinuously, 100, data, op);
+            
 
         }
         else if (op == '-') {
             if (control[0][data] == control[1][data]) {
+                control[0][data] = control[1][data];
                 return;
             }
             control[0][data] -= 1;
             myPort.write(encoder.encode(action));
-            setTimeout(performActionContinuously, 10, data, op);
+            setTimeout(performActionContinuously, 100, data, op);
         }
+        // performActionContinuously(data, op);
         updatePosition();    
     }
 }
@@ -215,8 +243,16 @@ function addPoints() {
     if(!working){
         return;
     }
+    var temp = getPosition();
+    if(Points_array.indexOf(temp) != -1){
+        return;
+    }
+    Points_array.push(temp);
     document.getElementById("Points").value = "M1:" + control[0]['base'] + " M2:" + control[0]['shoulder'] + " M3:" + control[0]['elbow'] + " M4:" + control[0]['wrist'] + " M5:" + control[0]['roll'] + " M6:" + control[0]['hand'] + " speed:" + speed + "\n" + document.getElementById('Points').value;
 }
 function updatePosition(){
     position.innerHTML = "M1:" + control[0]['base'] + " M2:" + control[0]['shoulder'] + " M3:" + control[0]['elbow'] + " M4:" + control[0]['wrist'] + " M5:" + control[0]['roll'] + " M6:" + control[0]['hand'] + " speed:" + speed;
+}
+function getPosition(){
+    return "P"+ speed + "," + control[0]['base'] + "," + control[0]['shoulder'] + "," + control[0]['elbow'] + "," + control[0]['wrist'] + "," + control[0]['roll'] + "," + control[0]['hand'] + "\n"
 }
